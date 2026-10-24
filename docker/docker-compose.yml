@@ -1,0 +1,21 @@
+services:
+  lm_route_proxy:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: lm_route_proxy:latest
+    # pub/.env supplies secrets/deploy values
+    env_file:
+      - ../.env
+    environment:
+      # container binds externally; fixed internal port
+      BIND_HOST: "0.0.0.0"
+      PORT: "9354"
+    ports:
+      - "${HOST_PORT:-9354}:9354"
+    volumes:
+      # live policy edits without rebuild
+      - ../settings.json:/app/settings.json:ro
+    restart: unless-stopped
+    stop_signal: SIGTERM
+    stop_grace_period: 15s

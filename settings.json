@@ -1,0 +1,52 @@
+{
+  // ---- scoring weights ----
+  "tps_prio": 0.45,
+  "latency_prio": 0.25,
+  "price_prio": 0.20,
+
+  // ---- metric bands ----
+  // consider just avg latency or spikes (prevent unexpected)
+  "latency_percentiles": ["p75", "p90", "p99"],
+  "tps_percentiles": ["p50", "p75"],
+  // estimated output tokens per-request (for output/M price weight)
+  "price_output_token_estimate": 1028,
+  // this * similarity = hit-likeliness
+  "cache_hit_neutral": 0.8,
+
+  // ---- cache stickiness ----
+  // provider boost if request overlaps X% with shared prefix from one in history (lower=longer transient)
+  "stick_activate_overlap_p": 0.70,
+  // 2.0 = slowly increase. 1.0 = linear. 0.1 = jump up on stick_activate to stick_max_boost (gate).
+  "stick_power": 1.4,
+  // max cache bonus for weighting - decrease when bad cache-hit-rate
+  "stick_max_boost": 0.60,
+  // for cache-overlap finding (up if session concurrency, down for low-spec)
+  "history_max": 500,
+  // history max time alive. tip: keep similar to `ttl_sec` (next entry)
+  "route_history_ttl_sec": 590,
+  // caching request sent to openrouter
+  "prompt_cache": {
+    "enabled": true,
+    "ttl_sec": 600
+  },
+
+  // ---- providers ----
+  // refetch provider stats every X sec (and on first request per model) (openr. currently at 5min(300))
+  "provider_metadata_ttl_sec": 300,
+  // refetch provider privacy every X sec (and on init) keep LF
+  "privacy_policy_ttl_sec": 21600,
+  "providers_allow_training": true,
+  "providers_allow_training_openrouter": false,
+  "providers_allow_retains_prompts": true,
+  "providers_allow_can_publish": false,
+  "provider_require_capabilities": ["tools"],
+  // fallback count for openrouter (1 = no fallback)
+  "provider_only_max": 12,
+  // drop error if provider doesnt react (increase on stream=false)
+  "upstream_timeout_sec": 300,
+
+  // ---- body mods ----
+  "fill_defaults_if_absent": {},
+  "force_body_overrides": {},
+  "per_model_overrides": {}
+}
